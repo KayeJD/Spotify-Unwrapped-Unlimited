@@ -1,0 +1,86 @@
+extends layout.pug
+    
+block content
+    img(src=user.images[0].url, class='circular_image')
+    h1 Welcome! #{user.id} ✨
+    
+    a(href='/logout') Logout
+
+    div
+      h2 Top 5 Genres
+      ol
+        each genre in topGenres
+          li= genre
+
+    div
+      h2 Last 4 weeks
+        h3 Top 5 Artists
+        ol
+          each artist in topArtistsShortTerm
+            li
+              a(href=`https://open.spotify.com/artist/${artist.id}`, target="_blank")= artist.name
+        h3 Top 5 Tracks
+        table
+          each track, index in topTracksShortTerm
+            tr
+              td
+                | #{index + 1}
+              td
+                img(src=track.album.images[0].url, alt="Album Cover", width="50", height="50")
+              td
+                a(href=`${track.preview_url}`, target="_blank")= track.name
+              td= track.artists[0].name
+      
+    div 
+      h2 Last 6 Months
+      h3 Top 5 Artists
+      ol
+        each artist in topArtistsMediumTerm
+          li
+            a(href=`https://open.spotify.com/artist/${artist.id}`, target="_blank")= artist.name
+      h3 Top 5 Tracks
+      table
+        each track, index in topTracksMediumTerm
+          tr
+            td
+              | #{index + 1}
+            td
+              img(src=track.album.images[0].url, alt="Album Cover", width="50", height="50")
+            td
+              a(href=`${track.preview_url}`, target="_blank")= track.name
+            td= track.artists[0].name
+
+    div
+      h2 All Time
+      h3 Top 5 Artists
+      ol
+        each artist in topArtistsLongTerm
+          li
+            a(href=`https://open.spotify.com/artist/${artist.id}`, target="_blank")= artist.name
+      h3 Top 5 Tracks
+      table
+        each track, index in topTracksLongTerm
+          tr
+            td
+              | #{index + 1}
+            td
+              img(src=track.album.images[0].url, alt="Album Cover", width="50", height="50")
+            td
+              a(href=`${track.preview_url}`, target="_blank")= track.name
+            td= track.artists[0].name
+
+    div
+      h2 Recently liked
+      table 
+        each t in tracks
+          tr 
+            - var artist_name = t.track.artists[0].name //".[0]" bc there is only one element for now
+            - var track_name = t.track.name
+            - var track_preview = t.track.preview_url
+            - var artist_id = t.track.artists[0].id
+            - var track_id = t.track.id 
+
+            td #{artist_name}
+            td: a(href='/recommendations?artist=' + artist_id + '&track=' + track_id) #{track_name}
+            td: a(href=track_preview) Preview
+
