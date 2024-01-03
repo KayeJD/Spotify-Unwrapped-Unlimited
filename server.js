@@ -10,8 +10,8 @@ app.set("view engine", "pug");
 app.use(express.static("public")); //tell express that we're using eplates for using pug, but we have static files in the folder
 
 const redirect_uri = "http://localhost:3000/callback";
-const client_id = "9da41224353040958358ffa03684a15d";
-const client_secret = "41c612cad6764314b516413d9606e99d";
+const client_id = "";
+const client_secret = "";
 
 global.access_token;
 
