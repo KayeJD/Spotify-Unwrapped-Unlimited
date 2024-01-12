@@ -15,7 +15,7 @@ const client_secret = "";
 
 global.access_token;
 
-// "res"= response. 
+
 app.get("/", function (req, res) {
   res.render("index");
 });
@@ -23,28 +23,32 @@ app.get("/", function (req, res) {
 //GET request to AUTHORIZE endpoint
 app.get("/authorize", (req, res) => {
   
+  // Constructing query parameters for authorization
   var auth_query_parameters = new URLSearchParams({
     response_type: "code",
     client_id: client_id,
-    scope: "user-library-read user-top-read", //way of authorizing app for only one specific access feature
-    redirect_uri: redirect_uri, //once we grant permission to spotify, 
+    scope: "user-library-read user-top-read",
+    redirect_uri: redirect_uri, 
   });
 
+  // Redirecting to Spotify's authorization URL
   res.redirect(
     "https://accounts.spotify.com/authorize?" + auth_query_parameters.toString()
   );
 });
 
 app.get("/callback", async (req, res) => {
+  // Retrieving the authorization code from the callback
   const code = req.query.code;
 
+  // Constructing the request body for token exchange
   var body = new URLSearchParams({
     code: code,
     redirect_uri: redirect_uri,
     grant_type: 'authorization_code',
   });
 
-  //post request
+  // Performing a POST request to Spotify's token endpoint
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "post",
     body: body,
@@ -56,6 +60,7 @@ app.get("/callback", async (req, res) => {
     },
   });
 
+  // Parsing the response JSON and storing the access token globally
   const data = await response.json();
   global.access_token = data.access_token;
   res.redirect("/dashboard");
@@ -93,7 +98,7 @@ app.get("/dashboard", async (req, res) => {
 
 });
 
-//recieve the endpoint for multiple APIs
+// Performing a GET request to Spotify API with the access token
 async function getData(endpoint) {
   const response = await fetch("https://api.spotify.com/v1" + endpoint, {
     method: "get",
@@ -102,14 +107,17 @@ async function getData(endpoint) {
     },
   });
 
+  // Parsing the response JSON and returning the data
   const data = await response.json();
   return data;
 }
 
 app.get("/recommendations", async (req, res) => {
+  // Fetch recommendations based on provided artist and track
   const artist_id = req.query.artist;
   const track_id = req.query.track;
 
+  // Constructing query parameters for recommendations
   const params = new URLSearchParams({
     seed_artist: artist_id,
     seed_genres: "rock",
@@ -120,7 +128,7 @@ app.get("/recommendations", async (req, res) => {
   res.render("recommendation", { tracks: data.tracks });
 });
 
-// Add this route
+// Adding this route for user logout
 app.get("/logout", (req, res) => {
   global.access_token = null; // Clear the access token
   res.redirect("/");
