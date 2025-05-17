@@ -11,7 +11,12 @@ _Guidance credit to Alvaro Navarro_
 ## Table of Contents
 1. [Core Functionality](#core-functionality)
 2. [Development Setup](#development-environment-setup)
-3. [Project Architecture](#project-architecture)
+4. [Project Architecture](#project-architecture)
+    - [Server Overview](#server-overview)
+    - [Authentication](#authentication-flow)
+    - [Data Flow](#data-flow)
+8. [Frontend](#frontend)
+9. [Notes](#architecture-limitations)
 
 ## Core Functionality 
 
@@ -26,9 +31,9 @@ _Guidance credit to Alvaro Navarro_
 ## Development Environment Setup
 
 ### Prerequisites
-- Node.js (12.20.0 or higher)
+- Node.js _(12.20.0 or higher)_
 - npm
-- A Spotify Developer account: For API credentials
+- A Spotify Developer account _(for API credentials)_
 
 ### Setup Process
 ![image](https://github.com/user-attachments/assets/944f4bd3-2527-4089-975f-c64228d25b13)
@@ -61,14 +66,13 @@ _Guidance credit to Alvaro Navarro_
     - Visit [Spotify Developer Dashboard](https://developer.spotify.com/) and log in with your Spotify account
     - Register a New Application
         - Note the Client ID and Client Secret
-        - Set Redirect URi (e.g., http://localhost:3000/callback)
+        - Set Redirect URi _(e.g., localhost:3000/callback)_
     - Configure Environment Variables _(Spotify Client ID, Client Secret, Redirect URI)_
       
 4. **Run Application** to execute _nodemon server.js_
    ```
    npm start
    ```
-
 
 ## Project Architecture
 <p align="center">
@@ -83,14 +87,14 @@ _Guidance credit to Alvaro Navarro_
 |Spotify Web API| External service providing user data and recommendations | Accessed via _getData()_ function |
 |Static Resources| CSS and other static files for frontend styling| _server.js_ |
 
-## Server Overview
+### Server Overview
 The server implementation is built using Express.js. It acts as the central component, handling HTTP requests, managing authentication with Spotify, fetching user data from Spotify's API, and rendering views to the client.
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/2d1b02e3-f768-488f-a96f-428ee73d69ad" />
 </p>
 
-## Authentication Flow 
+### Authentication Flow 
 The authentication flow involves three main routes:
 - /**authorize** Route _(server.js 24-38)_: Initiates authentication by redirecting to Spotify's authorization endpoint with required parameters:
     - **response_type**: Set to "code" for authorization code flow
@@ -108,7 +112,7 @@ The authentication flow involves three main routes:
     <img src="https://github.com/user-attachments/assets/f8362f05-e104-455d-baec-f166b558dd1d" width="600" />
 </p>
 
-## Data Flow
+### Data Flow
 The application uses the getData() function to retrieve user data from Spotify's API. This function handles the HTTP requests and authentication with the user's access token.
 
 <p align="center">
@@ -148,7 +152,7 @@ There are three main view templates that extend the base template:
         - Artist name
 3. **Recommendation** Template: Displays a list of tracks recommended by Spotify's API based on the user's preferences or selected seed tracks.
 
-## Frontend-Backend Integration
+### Frontend-Backend Integration
 <p align="center">
     <img src="https://github.com/user-attachments/assets/9c4d9a9f-6271-4001-a5f9-264ff6ab4db0" />
 </p>
