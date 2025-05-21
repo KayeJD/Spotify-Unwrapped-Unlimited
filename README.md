@@ -31,9 +31,9 @@ _Guidance credit to Alvaro Navarro_
 ## Development Environment Setup
 
 ### Prerequisites
-- Node.js _(12.20.0 or higher)_
-- npm
-- A Spotify Developer account _(for API credentials)_
+- [Node.js](https://nodejs.org/en) _(12.20.0 or higher)_
+  - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- A [Spotify Developer](https://developer.spotify.com/) account _(for API credentials)_
 
 ### Setup Process
 ![image](https://github.com/user-attachments/assets/944f4bd3-2527-4089-975f-c64228d25b13)
