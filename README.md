@@ -1,6 +1,8 @@
 # [Spotify Unwrapped Unlimited](https://kayejd.github.io/project-spotifyapi.html)
 
-This Spotify WebAPI application is a small little web-based system project that allows users to authenticate with their Spotify account, view their personalized music data (top artists, tracks, genres), and get music recommendations based on their preferences. I initially pursued so that I no longer have to wait until the end of the year to see my **Spotify Wrapped**! :D The application implements OAuth 2.0 for Spotify authentication and uses Pug templates for rendering views.
+This Spotify WebAPI application is a small little web-based system project that allows users to authenticate with their Spotify account, view their personalized music data (top artists, tracks, genres), and get music recommendations based on their preferences. I initially pursued so that I no longer have to wait until the end of the year to see my **Spotify Wrapped**! :D 
+
+The application implements OAuth 2.0 for Spotify authentication and uses Pug templates for rendering views.
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/b81f6968-cc13-41b6-9648-b8f825db0b08" width="600" />
