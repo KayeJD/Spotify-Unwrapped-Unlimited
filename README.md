@@ -1,3 +1,5 @@
+![main](https://github.com/user-attachments/assets/b3459c57-ccb6-45e2-9b31-ac7a56dcdba8)
+
 # [Spotify Unwrapped Unlimited](https://kayejd.github.io/project-spotifyapi.html)
 
 This Spotify WebAPI application is a small little web-based system project that allows users to authenticate with their Spotify account, view their personalized music data (top artists, tracks, genres), and get music recommendations based on their preferences. I initially pursued so that I no longer have to wait until the end of the year to see my **Spotify Wrapped**! :D 
