@@ -1,0 +1,91 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  transition: background var(--transition);
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.rank {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 22px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.art {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.trackName {
+  font-size: 14px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artistName {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.actionBtn:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+.recBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 10px 0;
+}
