@@ -1,98 +1,134 @@
-import express from "express";
+import { Router } from "express";
 import fetch from "node-fetch";
 import { requireAuth } from "../middleware/auth.js";
 
-const router = express.Router();
+const router = Router();
+const SPOTIFY_API = "https://api.spotify.com/v1";
 
-
-
-async function spotifyGet(endpoint, accessToken) {
-  const response = await fetch("https://api.spotify.com/v1" + endpoint, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-    },
+async function getData(endpoint, accessToken) {
+  const response = await fetch(`${SPOTIFY_API}${endpoint}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   if (!response.ok) {
-    const err = await response.json();
-    console.error(`Spotify API error on ${endpoint}:`, err);
-    throw new Error(`Spotify API error: ${response.status}`);
+    const err = await response.json().catch(() => ({}));
+    throw Object.assign(new Error(err?.error?.message || "Spotify API error"), {
+      status: response.status,
+    });
   }
 
   return response.json();
 }
 
+// NOTE: /recommendations/available-genre-seeds was deprecated by Spotify in 2024
+// and returns an empty body. Genres are now derived from the user's top artists.
 
 router.get("/dashboard", requireAuth, async (req, res) => {
-  const token = req.session.access_token;
-
   try {
+    const token = req.session.access_token;
+
     const [
       userInfo,
       likedTracks,
-      genreSeeds,
-      topArtistsLongTerm,
-      topArtistsMediumTerm,
-      topArtistsShortTerm,
-      topTracksLongTerm,
-      topTracksMediumTerm,
-      topTracksShortTerm,
+      topArtistsLong,
+      topArtistsMedium,
+      topArtistsShort,
+      topTracksLong,
+      topTracksMedium,
+      topTracksShort,
     ] = await Promise.all([
-      spotifyGet("/me", token),
-      spotifyGet("/me/tracks?limit=10", token),
-      spotifyGet("/recommendations/available-genre-seeds", token),
-      spotifyGet("/me/top/artists?limit=5&time_range=long_term", token),
-      spotifyGet("/me/top/artists?limit=5&time_range=medium_term", token),
-      spotifyGet("/me/top/artists?limit=5&time_range=short_term", token),
-      spotifyGet("/me/top/tracks?limit=5&time_range=long_term", token),
-      spotifyGet("/me/top/tracks?limit=5&time_range=medium_term", token),
-      spotifyGet("/me/top/tracks?limit=5&time_range=short_term", token),
+      getData("/me", token),
+      getData("/me/tracks?limit=10", token),
+      getData("/me/top/artists?limit=10&time_range=long_term", token),
+      getData("/me/top/artists?limit=5&time_range=medium_term", token),
+      getData("/me/top/artists?limit=5&time_range=short_term", token),
+      getData("/me/top/tracks?limit=5&time_range=long_term", token),
+      getData("/me/top/tracks?limit=5&time_range=medium_term", token),
+      getData("/me/top/tracks?limit=5&time_range=short_term", token),
     ]);
 
+    const topGenres = [
+      ...new Set(topArtistsLong.items.flatMap((a) => a.genres)),
+    ].slice(0, 5);
+
     res.json({
-      user: userInfo,
-      likedTracks: likedTracks.items,
-      topGenres: genreSeeds.genres.slice(0, 5),
+      user: {
+        id: userInfo.id,
+        displayName: userInfo.display_name,
+        image: userInfo.images?.[0]?.url ?? null,
+      },
+      likedTracks: likedTracks.items.map((item) => ({
+        id: item.track.id,
+        name: item.track.name,
+        previewUrl: item.track.preview_url,
+        artistId: item.track.artists[0].id,
+        artistName: item.track.artists[0].name,
+        albumImage: item.track.album.images[0]?.url ?? null,
+      })),
+      topGenres,
       topArtists: {
-        longTerm: topArtistsLongTerm.items,
-        mediumTerm: topArtistsMediumTerm.items,
-        shortTerm: topArtistsShortTerm.items,
+        long: topArtistsLong.items.slice(0, 5).map(formatArtist),
+        medium: topArtistsMedium.items.map(formatArtist),
+        short: topArtistsShort.items.map(formatArtist),
       },
       topTracks: {
-        longTerm: topTracksLongTerm.items,
-        mediumTerm: topTracksMediumTerm.items,
-        shortTerm: topTracksShortTerm.items,
+        long: topTracksLong.items.map(formatTrack),
+        medium: topTracksMedium.items.map(formatTrack),
+        short: topTracksShort.items.map(formatTrack),
       },
     });
   } catch (err) {
     console.error("Dashboard error:", err);
-    res.status(500).json({ error: "Failed to load dashboard data." });
+    const status = err.status === 401 ? 401 : 500;
+    res.status(status).json({ error: err.message });
   }
 });
-
-
 
 router.get("/recommendations", requireAuth, async (req, res) => {
   const { artist, track } = req.query;
 
   if (!artist || !track) {
-    return res.status(400).json({ error: "artist and track query params are required." });
+    return res.status(400).json({ error: "artist and track query params are required" });
   }
 
   try {
     const params = new URLSearchParams({
       seed_artists: artist,
-      seed_genres: "rock",
       seed_tracks: track,
+      seed_genres: "rock",
+      limit: 10,
     });
 
-    const data = await spotifyGet("/recommendations?" + params, req.session.access_token);
-    res.json({ tracks: data.tracks });
+    const data = await getData(`/recommendations?${params}`, req.session.access_token);
+
+    res.json({
+      tracks: data.tracks.map(formatTrack),
+    });
   } catch (err) {
     console.error("Recommendations error:", err);
-    res.status(500).json({ error: "Failed to load recommendations." });
+    const status = err.status === 401 ? 401 : 500;
+    res.status(status).json({ error: err.message });
   }
 });
+
+function formatArtist(artist) {
+  return {
+    id: artist.id,
+    name: artist.name,
+    url: `https://open.spotify.com/artist/${artist.id}`,
+    image: artist.images?.[0]?.url ?? null,
+  };
+}
+
+function formatTrack(track) {
+  return {
+    id: track.id,
+    name: track.name,
+    previewUrl: track.preview_url,
+    artistId: track.artists[0].id,
+    artistName: track.artists[0].name,
+    albumImage: track.album?.images?.[0]?.url ?? null,
+  };
+}
 
 export default router;
