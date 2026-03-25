@@ -107,16 +107,10 @@ The authorization code never touches the frontend. The client secret never leave
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/spotify-unwrapped.git
-cd spotify-unwrapped-unlimited
+git clone https://github.com/KayeJD/statify.git
 ```
 
 ### 2. Configure the backend
-
-```bash
-cd backend
-cp .env.example .env
-```
 
 Fill in your `.env`:
 
@@ -133,7 +127,7 @@ PORT=3000
 
 ### 3. Register the redirect URI
 
-In your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard), open your app → Settings and add:
+In your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard), add the redirect to your created app:
 
 ```
 http://127.0.0.1:5173/auth/callback
@@ -165,8 +159,6 @@ Open `http://127.0.0.1:5173` in your browser.
 
 ## Security Notes
 
-- The Spotify Client Secret is never sent to the browser
 - Access tokens are stored in `httpOnly` server-side sessions (inaccessible to JavaScript)
 - CORS is locked to the frontend origin only
-- `.env` is gitignored - credentials are never committed
 
