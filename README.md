@@ -7,7 +7,8 @@ An application that connects to the Spotify Web API to display your top artists,
 
 Built as a portfolio project to demonstrate OAuth 2.0 implementation, REST API design, and modern React architecture.
 
-## ⚠️ A Note on Spotify API Deprecations
+<details> <summary>⚠️ A Note on Spotify API Deprecations </summary>
+    
 In November 2024, Spotify silently deprecated several of the most useful endpoints for projects like this one including Audio Features, Audio Analysis, Related Artists, and Recommendations. 
 If you're exploring this project and want to extend it with audio analysis or mood features, the Spotify API is no longer the right tool for that. Some directions worth investigating:
 
@@ -17,16 +18,14 @@ If you're exploring this project and want to extend it with audio analysis or mo
 Local audio analysis :libraries like essentia.js (WebAssembly port of a professional audio analysis library) can run in the browser or Node.js directly on audio files if you have access to them.
 
 The architecture of this project (decoupled React frontend + Express REST API) is intentionally set up to make swapping or adding data sources straightforward.
+</details>
+
 
 ## Features
 
-- **Spotify OAuth 2.0 Authorization Code Flow** - secure login with token exchange handled entirely server-side
-- **Session-based authentication** - access tokens stored in server-side sessions, never exposed to the browser
-- **Automatic token refresh** - expired tokens are silently refreshed without interrupting the user
 - **Dashboard** - top artists and tracks across three time ranges (4 weeks, 6 months, all time)
 - **Genre insights** - top genres derived from listening history
 - **Track recommendations** - Spotify-powered recommendations seeded from your liked tracks (deprecated)
-- **Parallel API requests** - all Spotify calls on the dashboard run concurrently via `Promise.all`
 
 <img width="1087" height="887" alt="image" src="https://github.com/user-attachments/assets/9c9291af-c121-42a0-af84-e704b2451f77" />
 
